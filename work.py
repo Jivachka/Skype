@@ -1,8 +1,41 @@
+import time
+import os.path
 from data import login_name, password, friend
 from skpy import Skype
-import os.path
 from skpy import SkypeEventLoop
 
+
+class FolderCreator:
+    @staticmethod
+    def _data_today():
+        _time = time.gmtime()
+        return f'{_time.tm_year}_{_time.tm_mon}_{_time.tm_mday}'
+
+    @staticmethod
+    def _if_folder_created():
+        list_folder = os.listdir('documents/invoice')
+        if FolderCreator._data_today() in list_folder:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def create_folder_if():
+        if not FolderCreator._if_folder_created():
+            os.chdir('documents/invoice')
+            os.makedirs(FolderCreator._data_today())
+            os.chdir('/')
+            print(f'Create new folder {FolderCreator._data_today()}')
+        else:
+            print('Not need create new folder')
+
+    @staticmethod
+    def data():
+        if FolderCreator._if_folder_created():
+            return FolderCreator._data_today()
+        else:
+            FolderCreator.create_folder_if()
+            return FolderCreator._data_today()
 
 class LoginToSkype(object):
     def __init__(self):
@@ -62,22 +95,26 @@ class ChecksSaver(PareservingBasic):
         )
 
 class InvoiceSaver(PareservingBasic):
-    def __init__(self, folder_path='invoice/'):
+    def __init__(self, folder_path=f'invoice/{FolderCreator._data_today()}/'):
         self._startswitch_file_name = 'Видаткова'
         self._folder_path = folder_path
         super(InvoiceSaver, self).__init__(
             startswitch_file_name=self._startswitch_file_name,
             folder_path=self._folder_path
         )
+        if not FolderCreator._if_folder_created():
+            FolderCreator.create_folder_if()
+        print(folder_path)
+
 
 if __name__ == "__main__":
     # sk = MySkype (login_name, password, autoAck=False)
     # # sk.subscribePresence()  # Only if you need contact presence events.
     # # sk.loop()
     # sk.cycle ()
-
     check = ChecksSaver()
     invoce = InvoiceSaver()
+    time.sleep(5)
     check.save_to_folder()
     invoce.save_to_folder()
 
