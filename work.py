@@ -48,12 +48,10 @@ class LoginToSkype(object):
         pass
 
 class MySkype (SkypeEventLoop):
-    def __init__(self):
-        super(SkypeEventLoop, self).__init__()
     def onEvent(self, event):
         if event.type == 'NewMessage':
             print('New NMes')
-            return 'New ess'
+            return event
 
 class PareservingBasic(LoginToSkype):
     def __init__(self, startswitch_file_name, folder_path):
@@ -109,17 +107,34 @@ class InvoiceSaver(PareservingBasic):
             FolderCreator.create_folder_if()
         print(folder_path)
 
+class Cycler():
+    def __init__(self):
+        self.sk = Skype(login_name, password)
+
+    def start(self):
+        print('Start loop')
+        res = self.sk.getEvents()
+        res2 = self.sk.getEvents()
+        print('Done loop')
+        print(res)
+        print(res2)
+        for i in res2:
+            print(i.msgId)
 
 if __name__ == "__main__":
     # sk = MySkype (login_name, password, autoAck=False)
     # # sk.subscribePresence()  # Only if you need contact presence events.
     # # sk.loop()
     # sk.cycle ()
-    check = ChecksSaver()
-    invoce = InvoiceSaver()
-    time.sleep(5)
-    check.save_to_folder()
-    invoce.save_to_folder()
+    # check = ChecksSaver()
+    # invoce = InvoiceSaver()
+    # time.sleep(5)
+    # check.save_to_folder()
+    # invoce.save_to_folder()
+
+    event = Cycler()
+    event.start()
+
 
 
 
