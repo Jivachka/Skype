@@ -73,11 +73,14 @@ class PareservingBasic(LoginToSkype):
             print(e)
 
     def _if_check(self, check_name):
-        self._msg = self._get_last_message()
-        name = self._msg.file.name
-        if name.startswith(check_name):
-            return True
-        else:
+        try:
+            self._msg = self._get_last_message()
+            name = self._msg.file.name
+            if name.startswith(check_name):
+                return True
+            else:
+                return False
+        except AttributeError:
             return False
 
     def save_to_folder(self):
