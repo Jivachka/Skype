@@ -23,8 +23,8 @@ class MySkype (SkypeEventLoop):
             return 'New ess'
 
 class PareservingBasic(LoginToSkype):
-    def __init__(self, startswitch_file_name, folder_path, obj):
-        self._sk = obj
+    def __init__(self, startswitch_file_name, folder_path):
+        # self._sk = obj
         self._ch = ''
         self._msg = ''
         self._startswitch_file_name = startswitch_file_name
@@ -53,23 +53,21 @@ class PareservingBasic(LoginToSkype):
                 f.write(self._msg.fileContent)  # Write the file to disk.
 
 class ChecksSaver(PareservingBasic):
-    def __init__(self, obj, folder_path='checks/'):
+    def __init__(self, folder_path='checks/'):
         self._startswitch_file_name = 'Рахунок'
         self._folder_path = folder_path
         super(ChecksSaver, self).__init__(
             startswitch_file_name=self._startswitch_file_name,
-            folder_path=self._folder_path,
-            obj=obj
+            folder_path=self._folder_path
         )
 
 class InvoiceSaver(PareservingBasic):
-    def __init__(self, obj, folder_path='invoice/'):
+    def __init__(self, folder_path='invoice/'):
         self._startswitch_file_name = 'Видаткова'
         self._folder_path = folder_path
         super(InvoiceSaver, self).__init__(
             startswitch_file_name=self._startswitch_file_name,
-            folder_path=self._folder_path,
-            obj=obj
+            folder_path=self._folder_path
         )
 
 if __name__ == "__main__":
@@ -77,11 +75,11 @@ if __name__ == "__main__":
     # # sk.subscribePresence()  # Only if you need contact presence events.
     # # sk.loop()
     # sk.cycle ()
-    with LoginToSkype() as log:
-        check = ChecksSaver(log)
-        invoce = InvoiceSaver(log)
-        check.save_to_folder()
-        invoce.save_to_folder()
+
+    check = ChecksSaver()
+    invoce = InvoiceSaver()
+    check.save_to_folder()
+    invoce.save_to_folder()
 
 
 
