@@ -1,5 +1,6 @@
 import time
 import os.path
+import skpy
 from data import login_name, password, friend
 from skpy import Skype
 from skpy import SkypeEventLoop
@@ -103,39 +104,51 @@ class InvoiceSaver(PareservingBasic):
             startswitch_file_name=self._startswitch_file_name,
             folder_path=self._folder_path
         )
+
+    def if_folder_not_create(self):
         if not FolderCreator._if_folder_created():
             FolderCreator.create_folder_if()
-        print(folder_path)
 
-class Cycler():
+class Event:
     def __init__(self):
         self.sk = Skype(login_name, password)
 
-    def start(self):
+    def get_events(self):
         print('Start loop')
         res = self.sk.getEvents()
         res2 = self.sk.getEvents()
         print('Done loop')
-        print(res)
-        print(res2)
-        for i in res2:
-            print(i.msgId)
+        return [
+            res,
+            res2
+        ]
+
+    def if_new_message(self):
+        for i in self.get_events():
+            for ii in i:
+                if type(ii) == skpy.event.SkypeNewMessageEvent:
+                    return i
+        return False
+
+    def get_message_id(self):
+        events = self.if_new_message()
+        if events:
+            return events[0].msgId
+
 
 if __name__ == "__main__":
-    # sk = MySkype (login_name, password, autoAck=False)
-    # # sk.subscribePresence()  # Only if you need contact presence events.
-    # # sk.loop()
-    # sk.cycle ()
-    # check = ChecksSaver()
-    # invoce = InvoiceSaver()
-    # time.sleep(5)
-    # check.save_to_folder()
-    # invoce.save_to_folder()
-
-    event = Cycler()
-    event.start()
-
-
+    WHILE = True
+    check = ChecksSaver()
+    invoice = InvoiceSaver()
+    event = Event()
+    while WHILE:
+        message_id = event.get_message_id()
+        print(message_id)
+        time.sleep(3)
+        if message_id:
+            check.save_to_folder()
+            invoice.if_folder_not_create ()
+            invoice.save_to_folder()
 
 
 
