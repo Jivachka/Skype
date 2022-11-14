@@ -148,7 +148,6 @@ class Event:
         print(obj[0].msgId)
         return obj[0].msgId
 
-
 if __name__ == "__main__":
     WHILE = True
     check = ChecksSaver()
@@ -156,7 +155,6 @@ if __name__ == "__main__":
     event = Event()
     while WHILE:
         event.get_events()
-        time.sleep(3)
         if event.cycle_in_enents_list():
             check.save_to_folder()
             invoice.if_folder_not_create()
