@@ -112,28 +112,41 @@ class InvoiceSaver(PareservingBasic):
 class Event:
     def __init__(self):
         self.sk = Skype(login_name, password)
+        self.events_list = []
 
     def get_events(self):
         print('Start loop')
-        res = self.sk.getEvents()
-        res2 = self.sk.getEvents()
+        self.res = self.sk.getEvents()
+        self.events_list.append(self.res)
+        print(type(self.res[0]))
+        print()
         print('Done loop')
-        return [
-            res,
-            res2
-        ]
+        return self.res
 
-    def if_new_message(self):
-        for i in self.get_events():
-            for ii in i:
-                if type(ii) == skpy.event.SkypeNewMessageEvent:
-                    return i
+    def if_NewMessageEvent(self, obj):
+        if type(obj[0]) == skpy.event.SkypeNewMessageEvent:
+            return True
         return False
 
-    def get_message_id(self):
-        events = self.if_new_message()
-        if events:
-            return events[0].msgId
+    def if_TypingEvente(self, obj):
+        if type(obj[0]) == skpy.event.SkypeTypingEvent:
+            return True
+        return False
+
+    def cycle_in_enents_list(self):
+        for i in self.events_list:
+            if self.if_TypingEvente(i):
+                print(i)
+                self.events_list.remove(i)
+                return False
+
+            elif self.if_NewMessageEvent(i):
+                self.events_list.remove(i)
+                return self.get_message_id(i)
+
+    def get_message_id(self, obj):
+        print(obj[0].msgId)
+        return obj[0].msgId
 
 
 if __name__ == "__main__":
@@ -142,12 +155,11 @@ if __name__ == "__main__":
     invoice = InvoiceSaver()
     event = Event()
     while WHILE:
-        message_id = event.get_message_id()
-        print(message_id)
+        event.get_events()
         time.sleep(3)
-        if message_id:
+        if event.cycle_in_enents_list():
             check.save_to_folder()
-            invoice.if_folder_not_create ()
+            invoice.if_folder_not_create()
             invoice.save_to_folder()
 
 
