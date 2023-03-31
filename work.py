@@ -1,140 +1,38 @@
-import time
-import os.path
 from data import login_name, password, friend
 from skpy import Skype
-from skpy import SkypeEventLoop
+import os.path
+import time
+from threading import Thread
 
 
-class FolderCreator:
-    @staticmethod
-    def _data_today():
-        _time = time.gmtime()
-        return f'{_time.tm_year}_{_time.tm_mon}_{_time.tm_mday}'
+# Set up the Skype connection
+sk = Skype(login_name, password)
+ch = sk.chats['8:' + friend]
 
-    @staticmethod
-    def _if_folder_created():
-        list_folder = os.listdir('documents/invoice')
-        if FolderCreator._data_today() in list_folder:
-            return True
-        else:
-            return False
+# Define a function to handle new messages
+def handle_message(msg):
+    if msg.chat == ch:
+        with open(os.path.join("Documents/", msg.file.name), "wb") as f:
+            f.write(msg.fileContent)  # Write the file to disk.
+        print("New message received: ", msg.content)
 
-    @staticmethod
-    def create_folder_if():
-        if not FolderCreator._if_folder_created():
-            os.chdir('documents/invoice')
-            os.makedirs(FolderCreator._data_today())
-            os.chdir('/')
-            print(f'Create new folder {FolderCreator._data_today()}')
-        else:
-            print('Not need create new folder')
+# Define a function to start a new thread for handling messages
+def start_thread():
+    while True:
+        # Check for new events
+        events = sk.getEvents()
+        for event in events:
+            if event.type == "NewMessage":
+                handle_message(event.msg)
+        # Wait for a bit before polling again
+        time.sleep(1)
 
-    @staticmethod
-    def data():
-        if FolderCreator._if_folder_created():
-            return FolderCreator._data_today()
-        else:
-            FolderCreator.create_folder_if()
-            return FolderCreator._data_today()
+# Start multiple threads
+num_threads = 5
+threads = [Thread(target=start_thread) for _ in range(num_threads)]
+for t in threads:
+    t.start()
 
-class LoginToSkype(object):
-    def __init__(self):
-        self._sk = Skype(login_name, password)
-
-    def __enter__(self):
-        return self._sk
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
-
-class MySkype (SkypeEventLoop):
-    def __init__(self):
-        super(SkypeEventLoop, self).__init__()
-    def onEvent(self, event):
-        if event.type == 'NewMessage':
-            print('New NMes')
-            return 'New ess'
-
-class PareservingBasic(LoginToSkype):
-    def __init__(self, startswitch_file_name, folder_path):
-        # self._sk = obj
-        self._ch = ''
-        self._msg = ''
-        self._startswitch_file_name = startswitch_file_name
-        self._folder_path = folder_path
-        super(PareservingBasic, self).__init__()
-
-    def _get_last_message(self, friend=friend):
-        try:
-            self._ch = self._sk.chats['8:' + friend]
-            msg = self._ch.getMsgs()[0]
-            return msg
-        except Exception as e:
-            print(e)
-
-    def _if_check(self, check_name):
-        try:
-            self._msg = self._get_last_message()
-            name = self._msg.file.name
-            if name.startswith(check_name):
-                return True
-            else:
-                return False
-        except AttributeError:
-            return False
-
-    def save_to_folder(self):
-        if self._if_check(self._startswitch_file_name):
-            with open(os.path.join("documents/"+self._folder_path, self._msg.file.name), "wb") as f:
-                f.write(self._msg.fileContent)  # Write the file to disk.
-
-class ChecksSaver(PareservingBasic):
-    def __init__(self, folder_path='checks/'):
-        self._startswitch_file_name = 'Рахунок'
-        self._folder_path = folder_path
-        super(ChecksSaver, self).__init__(
-            startswitch_file_name=self._startswitch_file_name,
-            folder_path=self._folder_path
-        )
-
-class InvoiceSaver(PareservingBasic):
-    def __init__(self, folder_path=f'invoice/{FolderCreator._data_today()}/'):
-        self._startswitch_file_name = 'Видаткова'
-        self._folder_path = folder_path
-        super(InvoiceSaver, self).__init__(
-            startswitch_file_name=self._startswitch_file_name,
-            folder_path=self._folder_path
-        )
-        if not FolderCreator._if_folder_created():
-            FolderCreator.create_folder_if()
-        print(folder_path)
-
-
-if __name__ == "__main__":
-    # sk = MySkype (login_name, password, autoAck=False)
-    # # sk.subscribePresence()  # Only if you need contact presence events.
-    # # sk.loop()
-    # sk.cycle ()
-    check = ChecksSaver()
-    invoce = InvoiceSaver()
-    time.sleep(5)
-    check.save_to_folder()
-    invoce.save_to_folder()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Wait for all threads to complete
+for t in threads:
+    t.join()
