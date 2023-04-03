@@ -5,12 +5,14 @@ import os.path
 import time
 from threading import Thread, Lock
 
+
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class SkypeFileManager:
     def __init__(self, username, password):
         self.skype = Skype(username, password)
-        self.last_downloaded_file = None
+        self.last_downloaded_file = 'File dont download'
         self.last_downloaded_file_lock = Lock()
 
     def is_allowed_friend(self, friend_id):
@@ -58,6 +60,8 @@ class SkypeFileManager:
             with self.last_downloaded_file_lock:
                 logging.info("Last downloaded file: %s", self.last_downloaded_file)
             time.sleep(5)
+
+
 
 file_manager = SkypeFileManager(login_name, password)
 
