@@ -1,5 +1,5 @@
 import logging
-from data import login_name, password, allowed_friends
+from data import allowed_friends
 from skpy import Skype, SkypeFileMsg
 import os.path
 import time
@@ -63,13 +63,3 @@ class SkypeFileManager:
 
 
 
-file_manager = SkypeFileManager(login_name, password)
-
-num_threads = 5
-threads = [Thread(target=file_manager.start_thread) for _ in range(num_threads - 1)]
-threads.append(Thread(target=file_manager.print_last_file_name))
-for t in threads:
-    t.start()
-
-for t in threads:
-    t.join()
