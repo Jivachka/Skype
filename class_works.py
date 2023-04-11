@@ -1,19 +1,24 @@
 import logging
-from data import allowed_friends
-from skpy import Skype, SkypeFileMsg
 import os.path
-import time
 from threading import Thread, Lock
 
+import schedule
+from skpy import Skype, SkypeFileMsg
 
+from data import allowed_friends
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 class SkypeFileManager:
     def __init__(self, username, password):
         self.skype = Skype(username, password)
-        self.last_downloaded_file = 'File dont download'
+        self.last_downloaded_file = 'File not downloaded'
         self.last_downloaded_file_lock = Lock()
+        self.setup_schedule()
+
+    def setup_schedule(self):
+        schedule.every(5).seconds.do(self.print_last_file_name)
 
     def is_allowed_friend(self, friend_id):
         return friend_id in allowed_friends
@@ -53,13 +58,11 @@ class SkypeFileManager:
                     if file_name:
                         with self.last_downloaded_file_lock:
                             self.last_downloaded_file = file_name
-            time.sleep(1)
+            schedule.run_pending()
 
     def print_last_file_name(self):
-        while True:
-            with self.last_downloaded_file_lock:
-                logging.info("Last downloaded file: %s", self.last_downloaded_file)
-            time.sleep(5)
+        with self.last_downloaded_file_lock:
+            logging.info("Last downloaded file: %s", self.last_downloaded_file)
 
 
 
