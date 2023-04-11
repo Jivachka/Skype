@@ -54,7 +54,7 @@ class Invoice:
         if not os.path.exists(client_folder):
             os.makedirs(client_folder)
 
-        shutil.move(FileProcessor.BASE_PATH+self.filename, os.path.join(client_folder, os.path.basename(self.filename)))
+        shutil.move(FileProcessor.BASE_PATH+'/'+self.filename, client_folder+'/'+ os.path.basename(self.filename))
 
 class ExpenseInvoice(Invoice):
     def __init__(self, filename: str):
