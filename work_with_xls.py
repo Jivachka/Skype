@@ -12,11 +12,12 @@ class FileProcessor:
         self.accounts = []
 
     def process_files(self):
-        for file in self.files:
-            if 'Видаткова накладна' in file:
-                self.expense_invoices.append(ExpenseInvoice(file))
-            elif 'Рахунок' in file:
-                self.accounts.append(Account(file))
+        for file in os.listdir(FileProcessor.BASE_PATH):
+            if file.endswith(".xls") and os.path.getsize(FileProcessor.BASE_PATH + file) > 0:
+                if 'Видаткова накладна' in file:
+                    self.expense_invoices.append(ExpenseInvoice(file))
+                elif 'Рахунок' in file:
+                    self.accounts.append(Account(file))
 
 class Invoice:
     CLIENTS_FOLDER = 'Documents/clients/'
@@ -74,6 +75,7 @@ def get_files(path: str) -> List[str]:
 def main():
     path_to_files = 'Documents/'  # Укажите путь к папке с файлами
     files = get_files(path_to_files)
+
     file_processor = FileProcessor(files)
     file_processor.process_files()
 

@@ -3,7 +3,7 @@ from data import login_name, password, allowed_friends
 from skpy import Skype, SkypeFileMsg, SkypeNewMessageEvent
 import os.path
 import time
-from threading import Thread, Lock
+from threading import Lock
 
 # Set up logging to display messages in console
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -68,13 +68,3 @@ def start_thread():
         # Wait for a bit before polling again
         time.sleep(1)
 
-# Start multiple threads
-num_threads = 5
-threads = [Thread(target=start_thread) for _ in range(num_threads - 1)]
-threads.append(Thread(target=print_last_file_name))
-for t in threads:
-    t.start()
-
-# Wait for all threads to complete
-for t in threads:
-    t.join()
