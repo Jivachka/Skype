@@ -91,6 +91,9 @@ def main():
     file_processor = FileProcessor(files)
     file_processor.process_files()
 
+def run_main_loop():
+    while True:
+        main()
 
 if __name__ == '__main__':
     main()
