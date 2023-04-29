@@ -11,6 +11,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 
 class SkypeFileManager:
+    SHEDULE_TIME = 5
+
     def __init__(self, username, password):
         self.skype = Skype(username, password)
         self.last_downloaded_file = 'File not downloaded'
@@ -18,7 +20,7 @@ class SkypeFileManager:
         self.setup_schedule()
 
     def setup_schedule(self):
-        schedule.every(5).seconds.do(self.print_last_file_name)
+        schedule.every(self.SHEDULE_TIME).seconds.do(self.print_last_file_name)
 
     def is_allowed_friend(self, friend_id):
         return friend_id in allowed_friends
@@ -34,7 +36,7 @@ class SkypeFileManager:
             return file_msg.file.name
 
     def send_response(self, chat, file_name):
-        chat.sendMsg(f"✅ File saved: (1f4be_floppydisk) \n {file_name} ")
+        chat.sendMsg(f"(seenoevil)  File saved: (1f4be_floppydisk) \n {file_name} ")
 
     def handle_message(self, event):
         msg = event.msg

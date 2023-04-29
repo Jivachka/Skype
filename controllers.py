@@ -6,8 +6,6 @@ from data import login_name, password
 
 
 # Start multiple threads
-
-
 file_manager = SkypeFileManager(login_name, password)
 
 num_threads = 3
