@@ -102,6 +102,7 @@ def get_files(path: str) -> List[str]:
 
 
 def main():
+    # parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     path_to_files = 'Documents/'
     files = get_files(path_to_files)
 

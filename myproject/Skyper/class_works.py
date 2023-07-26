@@ -5,7 +5,7 @@ from threading import Thread, Lock
 import schedule
 from skpy import Skype, SkypeFileMsg
 
-from data import allowed_friends
+from .data import allowed_friends
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
