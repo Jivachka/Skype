@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 class SkypeFileManager:
     SHEDULE_TIME = 5
-
+    DOCUMENT_FOLDER_PATH = 'Documents/'
     def __init__(self, username, password):
         self.skype = Skype(username, password)
         self.last_downloaded_file = 'File not downloaded'
@@ -26,7 +26,7 @@ class SkypeFileManager:
         return friend_id in allowed_friends
 
     def save_file(self, file_msg):
-        with open(os.path.join("Documents/", file_msg.file.name), "wb") as f:
+        with open(os.path.join(self.DOCUMENT_FOLDER_PATH, file_msg.file.name), "wb") as f:
             f.write(file_msg.fileContent)
 
     def get_file_name(self, file_msg):

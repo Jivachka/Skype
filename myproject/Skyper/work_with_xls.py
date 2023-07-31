@@ -5,12 +5,14 @@ import xlrd
 import shutil
 import logging
 
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class FileProcessor:
-    BASE_PATH = 'Documents/'
+    BASE_PATH = os.path.join(BASE_DIR, 'Documents/')
 
     def __init__(self, files: List[str]):
         self.files = files
@@ -34,7 +36,7 @@ class FileProcessor:
 
 
 class Invoice:
-    CLIENTS_FOLDER = 'Documents/clients/'
+    CLIENTS_FOLDER = FileProcessor.BASE_PATH +'clients/'
     CLEANER_WORD = r'[^Ііа-яА-Яa-zA-Z\s]'
 
     def __init__(self, filename: str, number_and_date_cell: tuple, client_name_cell: tuple):
@@ -103,8 +105,7 @@ def get_files(path: str) -> List[str]:
 
 def main():
     # parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    path_to_files = 'Documents/'
-    files = get_files(path_to_files)
+    files = get_files(FileProcessor.BASE_PATH)
 
     file_processor = FileProcessor(files)
     file_processor.process_files()
