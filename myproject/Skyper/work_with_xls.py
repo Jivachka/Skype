@@ -37,7 +37,7 @@ class FileProcessor:
 
 
 class Invoice:
-    CLIENTS_FOLDER = BASE_PATH +'clients/'
+    CLIENTS_FOLDER = BASE_PATH + 'clients/'
     CLEANER_WORD = r'[^Ііа-яА-Яa-zA-Z\s]'
 
     def __init__(self, filename: str, number_and_date_cell: tuple, client_name_cell: tuple):
@@ -86,14 +86,18 @@ class Invoice:
             logger.error(f"In move_file_to_client_folder: {e}")
 
 class ExpenseInvoice(Invoice):
-    def __init__(self, filename: str):
-        super().__init__(filename, (2, 1), (7, 6))
+    DATA_AND_NOMBER = (2, 1)
+    CLIENT_NAME = (7, 6)
 
+    def __init__(self, filename: str):
+        super().__init__(filename, self.DATA_AND_NOMBER, self.CLIENT_NAME)
 
 class Account(Invoice):
-    def __init__(self, filename: str):
-        super().__init__(filename, (15, 2), (20, 11))
+    DATA_AND_NOMBER = (15, 2)
+    CLIENT_NAME = (20, 11)
 
+    def __init__(self, filename: str):
+        super().__init__(filename, self.DATA_AND_NOMBER, self.CLIENT_NAME)
 
 def get_files(path: str) -> List[str]:
     files = []

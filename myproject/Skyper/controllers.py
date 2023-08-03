@@ -9,7 +9,7 @@ from data import login_name, password
 file_manager = SkypeFileManager(login_name, password)
 
 num_threads = 3
-threads = [Thread(target=file_manager.start_thread) for _ in range(num_threads - 2)]
+threads = [Thread(target=file_manager.start_thread) for _ in range(num_threads - 1)]
 threads.append(Thread(target=file_manager.print_last_file_name))
 threads.append(Thread(target=run_main_loop))
 for t in threads:
