@@ -1,4 +1,5 @@
 import os
+from ..Skyper.data import db_name, db_user, db_password
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -65,10 +66,15 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': db_name,  # Имя вашей базы данных
+        'USER': db_user,      # Имя пользователя
+        'PASSWORD': db_password, # Пароль
+        'HOST': 'localhost',   # Адрес сервера базы данных (если находится на том же сервере)
+        'PORT': '5432',        # Порт (стандартный порт PostgreSQL)
     }
 }
+
 
 
 # Password validation
