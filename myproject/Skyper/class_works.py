@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 
 class SkypeFileManager:
+    # Этот класс чисто проверяет наличие нового сообщения, и если есть там файл сохраняет в указаное место. И все.
     SHEDULE_TIME = 5
     DOCUMENT_FOLDER_PATH = 'Documents/'
     def __init__(self, username, password):
@@ -65,6 +66,5 @@ class SkypeFileManager:
     def print_last_file_name(self):
         with self.last_downloaded_file_lock:
             logging.info("Last downloaded file: %s", self.last_downloaded_file)
-
 
 
