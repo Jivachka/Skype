@@ -1,22 +1,26 @@
 import re
 from datetime import datetime
 
-class InvoiceNameDetailsExtractor:
-    def __init__(self, input_string):
-        self.input_string = input_string
-        self.parsed_data = self.parsing_file()
+class InvoiceDetailsExtractor:
+    pass
 
-    def parsing_file(self):
+class DateAndNumberExtractor(InvoiceDetailsExtractor):
+    def __init__(self, input_string):
+        self._input_string = input_string
+        self._parsed_data = self.__parsing_file()
+        super().__init__()
+
+    def __parsing_file(self):
         number_pattern = r'№ (\d+)'
         date_pattern = r'(\d{1,2}) (\w+) (\d{4})'
 
-        number = re.search(number_pattern, self.input_string).group(1)
-        day, month_name, year = re.search(date_pattern, self.input_string).groups()
+        number = re.search(number_pattern, self._input_string).group(1)
+        day, month_name, year = re.search(date_pattern, self._input_string).groups()
 
         return [number, day, month_name, year]
 
     @staticmethod
-    def date_formating(*date_data):
+    def __date_formating(*date_data):
         months_ua = {
             "січня": "01", "лютого": "02", "березня": "03", "квітня": "04", "травня": "05", "червня": "06",
             "липня": "07", "серпня": "08", "вересня": "09", "жовтня": "10", "листопада": "11", "грудня": "12"
@@ -29,20 +33,33 @@ class InvoiceNameDetailsExtractor:
         return [date_str, date_obj, date_data[0]]
 
     def date_in_str(self):
-        result = self.date_formating(*self.parsed_data)
+        result = self.__date_formating(*self._parsed_data)
         return result[0]
 
     def date_in_datefield(self):
-        result = self.date_formating(*self.parsed_data)
+        result = self.__date_formating(*self._parsed_data)
         return result[1]
 
     def number_invoice(self):
-        result = self.date_formating(*self.parsed_data)
+        result = self.__date_formating(*self._parsed_data)
         return result[2]
 
-input_string = "Видаткова накладна № 1592 від 03 серпня 2023 р."
-work = InvoiceNameDetailsExtractor(input_string)
-number_inv = work.number_invoice()
-date_ = work.date_in_datefield()
-print("Номер накладной:", number_inv)
-print("Дата:", date_)
+class Go:
+    def __init__(self, __input_string):
+        self.__input_string = __input_string
+        # self.__input_string = "Видаткова накладна № 1592 від 03 серпня 2023 р."
+        self.__work = DateAndNumberExtractor(self.__input_string)
+        self.__number_inv = self.__work.number_invoice()
+        self.__date_date_ = self.__work.date_in_datefield()
+        self.__number_inv = self.__work.number_invoice()
+        self.__date_ = self.__work.date_in_datefield()
+        self.__number_faild = self.__work.date_in_str()
+
+    def go_print(self):
+        print("Номер накладной:", self.__number_inv)
+        print("Дата:", self.__number_faild)
+        print("Дата:", self.__date_)
+
+if __name__ == "__main__":
+    go_work = Go()
+    go_work.go_print()

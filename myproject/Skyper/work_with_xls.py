@@ -83,7 +83,7 @@ class Invoice:
             shutil.move(os.path.join(BASE_PATH, self.filename),
                         os.path.join(client_folder, os.path.basename(self.filename)))
         except Exception as e:
-            logger.error(f"In move_file_to_client_folder: {e}")
+            logger.error(f"Error in move_file_to_client_folder: {e}")
 
 class ExpenseInvoice(Invoice):
     DATA_AND_NOMBER = (2, 1)
@@ -111,7 +111,6 @@ def get_files(path: str) -> List[str]:
 def main():
     # parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     files = get_files(BASE_PATH)
-
     file_processor = FileProcessor(files)
     file_processor.process_files()
 
