@@ -111,16 +111,15 @@ class Account(Invoice):
 
 class DateAndNumberExtractor(InvoiceDetailsExtractor):
     def __init__(self, input_string):
-        self._input_string = input_string
-        self._parsed_data = self._parsing_file()
+        self._parsed_data = self._parsing_file(input_string)
         super().__init__()
 
-    def _parsing_file(self):
+    def _parsing_file(self, input_str):
         number_pattern = r'№ (\d+)'
         date_pattern = r'(\d{1,2}) (\w+) (\d{4})'
 
-        number = re.search(number_pattern, self._input_string).group(1)
-        day, month_name, year = re.search(date_pattern, self._input_string).groups()
+        number = re.search(number_pattern, input_str).group(1)
+        day, month_name, year = re.search(date_pattern, input_str).groups()
 
         return [number, day, month_name, year]
 
