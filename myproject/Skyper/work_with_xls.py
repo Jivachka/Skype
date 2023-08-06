@@ -13,77 +13,82 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_PATH = os.path.join(BASE_DIR, 'Documents/')
 
 class FileProcessor:
-    def __init__(self, files: List[str]):
-        self.files = files
-        self.expense_invoices = []
-        self.accounts = []
-        self.sales_invoice = 'Видаткова накладна'
-        self.score = 'Рахунок'
+    def __init__(
+            self, files: List[str],
+            sales_invoice='Видаткова накладна',
+            score = 'Рахунок'
+    ):
+        self._files = files
+        self._expense_invoices = []
+        self._accounts = []
+        self._sales_invoice = sales_invoice
+        self._score = score
 
     def process_files(self):
         for file in os.listdir(BASE_PATH):
             if file.endswith(".xls") and os.path.getsize(BASE_PATH + file) > 0:
-                if self.sales_invoice in file:
+                if self._sales_invoice in file:
                     try:
-                        self.expense_invoices.append(ExpenseInvoice(file))
+                        self._expense_invoices.append(ExpenseInvoice(file))
                     except Exception as e:
-                        logger.error(f"In process_files {self.sales_invoice}: {e}")
+                        logger.error(f"In process_files {self._sales_invoice}: {e}")
 
-                elif self.score in file:
+                elif self._score in file:
                     try:
-                        self.accounts.append(Account(file))
+                        self._accounts.append(Account(file))
                     except Exception as e:
-                        logger.error(f"In process_files {self.score}: {e}")
+                        logger.error(f"In process_files {self._score}: {e}")
+
 
 
 class Invoice:
-    CLIENTS_FOLDER = BASE_PATH + 'clients/'
-    CLEANER_WORD = r'[^Ііа-яА-Яa-zA-Z\s]'
+    _CLIENTS_FOLDER = BASE_PATH + 'clients/'
+    _CLEANER_WORD = r'[^Ііа-яА-Яa-zA-Z\s]'
 
     def __init__(self, filename: str, number_and_date_cell: tuple, client_name_cell: tuple):
-        self.filename = filename
-        self.workbook = xlrd.open_workbook(BASE_PATH + filename)
-        self.number_and_date_cell = number_and_date_cell
-        self.client_name_cell = client_name_cell
-        self.process()
+        self._filename = filename
+        self._workbook = xlrd.open_workbook(BASE_PATH + filename)
+        self._number_and_date_cell = number_and_date_cell
+        self._client_name_cell = client_name_cell
+        self._process()
 
-    def process(self):
-        self.parse_invoice()
+    def _process(self):
+        self._parse_invoice()
 
-    def parse_invoice(self):
+    def _parse_invoice(self):
         try:
-            sheet = self.workbook.sheet_by_index(0)
-            number_and_date = sheet.cell_value(*self.number_and_date_cell)
-            client_name = sheet.cell_value(*self.client_name_cell)
-            self.client_name = self.clean_client_name(client_name)
+            sheet = self._workbook.sheet_by_index(0)
+            number_and_date = sheet.cell_value(*self._number_and_date_cell)
+            client_name = sheet.cell_value(*self._client_name_cell)
+            self._client_name = self._clean_client_name(client_name)
 
-            logger.info(f"Filename: {self.filename}")
+            logger.info(f"Filename: {self._filename}")
             logger.info(f"Number and date: {number_and_date}")
-            logger.info(f"Client name: {self.client_name}")
+            logger.info(f"Client name: {self._client_name}")
 
-            self.move_file_to_client_folder(self.client_name)
+            self._move_file_to_client_folder(self._client_name)
         except Exception as e:
-            logger.error(f"In parse_invoice: {e}")
-
+            logger.error(f"In _parse_invoice: {e}")
 
     @staticmethod
-    def clean_client_name(client_name: str) -> str:
+    def _clean_client_name(client_name: str) -> str:
         try:
-            return re.sub(Invoice.CLEANER_WORD, '', client_name)
+            return re.sub(Invoice._CLEANER_WORD, '', client_name)
         except Exception as e:
-            logger.error(f"In clean_client_name: {e}")
+            logger.error(f"In _clean_client_name: {e}")
 
-    def move_file_to_client_folder(self, client_name: str):
+    def _move_file_to_client_folder(self, client_name: str):
         try:
-            client_folder = os.path.join(self.CLIENTS_FOLDER, client_name)
+            client_folder = os.path.join(self._CLIENTS_FOLDER, client_name)
 
             if not os.path.exists(client_folder):
                 os.makedirs(client_folder)
 
-            shutil.move(os.path.join(BASE_PATH, self.filename),
-                        os.path.join(client_folder, os.path.basename(self.filename)))
+            shutil.move(os.path.join(BASE_PATH, self._filename),
+                        os.path.join(client_folder, os.path.basename(self._filename)))
         except Exception as e:
-            logger.error(f"Error in move_file_to_client_folder: {e}")
+            logger.error(f"Error in _move_file_to_client_folder: {e}")
+
 
 class ExpenseInvoice(Invoice):
     DATA_AND_NOMBER = (2, 1)
