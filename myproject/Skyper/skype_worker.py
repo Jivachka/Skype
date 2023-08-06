@@ -6,10 +6,10 @@ import schedule
 from skpy import Skype, SkypeFileMsg
 
 from .data import allowed_friends
-from .work_with_xls import BASE_PATH
+from .config import BASE_PATH
+
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 
 class SkypeFileManager:
     # Этот класс чисто проверяет наличие нового сообщения,

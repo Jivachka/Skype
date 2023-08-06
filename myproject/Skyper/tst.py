@@ -7,10 +7,10 @@ class InvoiceDetailsExtractor:
 class DateAndNumberExtractor(InvoiceDetailsExtractor):
     def __init__(self, input_string):
         self._input_string = input_string
-        self._parsed_data = self.__parsing_file()
+        self._parsed_data = self._parsing_file()
         super().__init__()
 
-    def __parsing_file(self):
+    def _parsing_file(self):
         number_pattern = r'№ (\d+)'
         date_pattern = r'(\d{1,2}) (\w+) (\d{4})'
 
@@ -20,7 +20,7 @@ class DateAndNumberExtractor(InvoiceDetailsExtractor):
         return [number, day, month_name, year]
 
     @staticmethod
-    def __date_formating(*date_data):
+    def _date_formating(*date_data):
         months_ua = {
             "січня": "01", "лютого": "02", "березня": "03", "квітня": "04", "травня": "05", "червня": "06",
             "липня": "07", "серпня": "08", "вересня": "09", "жовтня": "10", "листопада": "11", "грудня": "12"
@@ -33,15 +33,15 @@ class DateAndNumberExtractor(InvoiceDetailsExtractor):
         return [date_str, date_obj, date_data[0]]
 
     def date_in_str(self):
-        result = self.__date_formating(*self._parsed_data)
+        result = self._date_formating(*self._parsed_data)
         return result[0]
 
     def date_in_datefield(self):
-        result = self.__date_formating(*self._parsed_data)
+        result = self._date_formating(*self._parsed_data)
         return result[1]
 
     def number_invoice(self):
-        result = self.__date_formating(*self._parsed_data)
+        result = self._date_formating(*self._parsed_data)
         return result[2]
 
 class Go:
